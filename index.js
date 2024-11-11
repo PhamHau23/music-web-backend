@@ -42,7 +42,7 @@ mssql.connect(dbConfig, (err) => {
 });
 
 //api bai hat
-router.get('/quoc-gia', async (req, res) => {
+router.get('/api/quoc-gia', async (req, res) => {
   try{
     const query = 'select * from QuocGia'
     const data = await new mssql.Request().query(query)
@@ -53,7 +53,7 @@ router.get('/quoc-gia', async (req, res) => {
   }
 })
 
-router.get('/the-loai', async (req, res) => {
+router.get('/api/the-loai', async (req, res) => {
   try{
     const query = 'select * from TheLoai'
     const data = await new mssql.Request().query(query)
@@ -64,21 +64,34 @@ router.get('/the-loai', async (req, res) => {
   }
 })
 
-router.get('/the-loai/:id', async (req, res) => {
-  const id = req.params.id
+router.get('/api/:idquocgia/the-loai', async (req, res) => {
+  const id = req.params.idquocgia
   const query = `select * from theloai where idQuocGia = '${id}'`
   const data = await new mssql.Request().query(query)
   res.send(data.recordset)
 })
 
-router.post('/upload/quocgia', async(req, res) => {
-  try{
-    
-  }catch(err){
-    res.send('error',err)
-    console.log(err)
-  }
+router.get('/api/:idtheloai', async (req, res) => {
+  const id = req.params.idtheloai
+  const query = `select * from theloai where id = '${id}'`
+  const data = await new mssql.Request().query(query)
+  res.send(data.recordset)
 })
+
+router.get('/api/:idtheloai/songs', async(req, res) => {
+  const idtheloai = req.params.idtheloai
+  const query =  `select * from BaiHat where idTheLoai = '${idtheloai}'`
+  const data = await new mssql.Request().query(query)
+  res.send(data.recordset)
+})
+
+router.get('/api/:idsong', async(req, res) => {
+  const idSong = req.params.idsong
+  const query =  `select url from BaiHat where id = '${idSong}'`
+  const data = await new mssql.Request().query(query)
+  res.send(data.recordset)
+})
+
 
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
