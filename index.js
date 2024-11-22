@@ -2,6 +2,7 @@ import express, { query, response } from 'express';
 import mssql from 'mssql';
 import cors from 'cors';
 import multer from 'multer';
+import redis from 'redis'
 import cloudinary from './configs/cloudinaryConfig.js'
 import { dbConfig } from './configs/database.js';
 import { getTheLoai } from './theLoai/theLoai.js';
@@ -69,14 +70,17 @@ router.get('/api/the-loai', async (req, res) => {
 router.get('/api/:idquocgia/the-loai', async (req, res) => {
   const id = req.params.idquocgia
   const query = `select * from theloai where idQuocGia = '${id}'`
+  const query1 = `update QuocGia set luotTruyCap = luotTruyCap + 1 where id = '${id}'`
+  await new mssql.Request().query(query1)
   const data = await new mssql.Request().query(query)
   res.send(data.recordset)
 })
 
 // api lay ra 1 the loai theo id
-router.get('/api/:idtheloai', async (req, res) => {
+router.get('/api/the-loai/:idtheloai', async (req, res) => {
   const id = req.params.idtheloai
-  const query = `select * from theloai where id = '${id}'`
+  const query = `select * from TheLoai where id = '${id}'`
+  await new mssql.Request().query(`update TheLoai set luotTruyCap = luotTruyCap + 1 where id = '${id}'`)
   const data = await new mssql.Request().query(query)
   res.send(data.recordset)
 })
@@ -90,7 +94,7 @@ router.get('/api/:idtheloai/songs', async (req, res) => {
 })
 
 // api lay ra file mp3 cua bai hat da chon
-router.get('/api/:idsong', async (req, res) => {
+router.get('/api/song/:idsong', async (req, res) => {
   const idSong = req.params.idsong
   const query =  `select url from BaiHat where id = '${idSong}'`
   const data = await new mssql.Request().query(query)
@@ -99,30 +103,51 @@ router.get('/api/:idsong', async (req, res) => {
 
 // api lay ra danh sach top100 theo tung khu vuc
 router.get('/api/:idquocgia/top100', async (req, res) => {
-  const idQuocGia = req.params.idquocgia
-  const query = `select * from Top100 where quocGiaId = '${idQuocGia}'`
-  const data = await new mssql.Request().query(query)
-  res.send(data.recordset)
+  //
 })
 
 // api lay ra cac bai hat thuoc top100 cua the loai da chon
 router.get('/api/:idtheloai/top100song', async (req, res) => {
   const idTheLoai = req.params.idtheloai
-  const query = `select id,tenBaiHat,img,idCasi,idTheLoai from BaiHat where idTheLoai = '${idTheLoai}'`
+  const query = `select top(100) id,tenBaiHat,img,idCasi,idTheLoai from BaiHat where idTheLoai = '${idTheLoai}' order by soLuotNghe desc`
   const data = await new mssql.Request().query(query)
   res.send(data.recordset)
 })
 
 // api lay ra bai hat moi
 router.get('/api/songnewupdate', async (req, res) => {
-  const query = `select top(9) id,tenBaiHat,img,idCasi,idTheLoai,ngayPhatHanh from BatHat oder by ngayPhatHanh desc`
+  const query = `select top(9) id,tenBaiHat,img,idCasi,idTheLoai,ngayPhatHanh from BatHat order by ngayPhatHanh desc`
   const data = await new mssql.Request().query(query)
   res.send(data.recordset)
 })
 
 // api top100 all song
 router.get('/api/top100allsong', async (req, res) => {
-  const query = `select top(9) id,tenBaiHat,img,idCasi,idTheLoai from BatHat oder by ngayPhatHanh desc`
+  const query = `select top(100) id,tenBaiHat,img,idCasi,idTheLoai from BatHat order by soLuotNghe desc`
+  const data = await new mssql.Request().query(query)
+  res.send(data.recordset)
+})
+
+// api trang chủ
+
+const newData = {
+  newSongsList: {
+    title: 'Mới Phát Hành',
+    songsList: [
+
+    ]
+  },
+
+  rankNewSongsList: {
+    title: 'Bảng Xếp Hạng Nhạc Mới',
+    songsList: [
+      
+    ]
+  }
+}
+
+router.get('/api/home', async (req, res) => {
+  const query = `select top(4) img, tenTheLoai, id, luotTruyCap from TheLoai order by luotTruyCap desc`
   const data = await new mssql.Request().query(query)
   res.send(data.recordset)
 })
