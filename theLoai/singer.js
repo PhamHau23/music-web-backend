@@ -1,5 +1,4 @@
 import slugify from 'slugify'
-import {connectDB} from '../configs/mongoDb.js'
 import Nation from '../models/nation.model.js'
 import Singer from '../models/singer.model.js'
 
@@ -8,7 +7,6 @@ const data = [
 ]
 
 export const addSinger = async() => {
-    await connectDB()
     for(const item of data){
         const nation = await Nation.findOne({id: item.nation})
         const slug = slugify(item.name, {lower: true})

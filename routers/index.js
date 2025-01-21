@@ -7,6 +7,7 @@ import {route as homePageRoute} from "./homePage.routes.js"
 import {route as genrePageRoute} from "./genrePage.routes.js"
 import {route as songsPageRoute} from "./songsPage.routes.js"
 import {route as newSongPageRoute} from "./newSongPage.routes.js"
+import {route as singerPageRoute} from "./singerPage.routes.js"
 const router = Router()
 
 router.use('/nation',nationRoute)
@@ -17,5 +18,6 @@ router.use('/homepage', homePageRoute)
 router.use('/genrepage', genrePageRoute)
 router.use('/songpage', songsPageRoute)
 router.use('/newsongpage', newSongPageRoute)
+router.use('/singerpage', singerPageRoute)
 
 export default router

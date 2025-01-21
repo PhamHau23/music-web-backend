@@ -1,4 +1,4 @@
-import Nation from "../models/nation.model.js";
+import Nation from "../models/nation.model.js"
 import Singer from "../models/singer.model.js"
 
 export const getAllSingers = async(req, res) => {
@@ -42,9 +42,4 @@ export const getSingersByNation = async(req, res) => {
         console.log('Error:', err)
         return res.status(500).json({ message: 'Không lấy được dữ liệu' })
     }
-}
-
-
-export const getSongBySinger = async(req, res) => {
- 
 }

@@ -1,4 +1,3 @@
-import { connectDB } from "../configs/mongoDb.js";
 import slugify from "slugify";
 import Genres from "../models/genres.model.js";
 import Nation from "../models/nation.model.js";
@@ -56,7 +55,6 @@ const song = [
 ]
 
 const addSong = async() => {
-    await connectDB()
     for(const item of song){
         const nation = await Nation.findOne({id: item.nation})
         const genre = await Genres.findOne({id: item.genre})

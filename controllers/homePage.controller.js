@@ -18,7 +18,8 @@ const vnNewSongs = async () => {
         .select('-url -view -__v -updatedAt')
         .populate([
             { path: 'nation', select: 'id -_id' },
-            { path: 'genre', select: 'id -_id' }
+            { path: 'genre', select: 'id -_id' },
+            { path: 'singerId', select: 'slug name'}
         ]);
 }
 
@@ -29,7 +30,8 @@ const allNewSongs = async () => {
         .select('-url -view -__v -updatedAt')
         .populate([
             { path: 'nation', select: 'id -_id' },
-            { path: 'genre', select: 'id -_id' }
+            { path: 'genre', select: 'id -_id' },
+            { path: 'singerId', select: 'slug name'}
         ]);
 }
 
@@ -41,7 +43,8 @@ const qtNewSongs = async () => {
         .select('-url -view -__v -updatedAt')
         .populate([
             { path: 'nation', select: 'id -_id' },
-            { path: 'genre', select: 'id -_id' }
+            { path: 'genre', select: 'id -_id' },
+            { path: 'singerId', select: 'slug name'}
         ]);
 }
 
@@ -50,6 +53,7 @@ const rankAllSong = async () => {
         .sort({ view: -1 })
         .limit(6)
         .select('-url -releaseDate -nation -genre -__v -createdAt')
+        .populate({path: 'singerId', select: 'slug name'})
     return songs
 }
 

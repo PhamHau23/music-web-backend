@@ -29,6 +29,9 @@ const hotSongs = async (id) => {
     return await Song.find({nation: nation._id})
             .sort({view: -1})
             .limit(12)
+            .populate([
+                {path: 'singerId', select: 'slug name -_id'}
+            ])
             .select('-nation -url -genre -updatedAt -__v')
 }
 
@@ -50,12 +53,12 @@ export const genrePage = async (req, res) => {
             singers(id)
         ]
 
-        const datas = await Promise.all(promises)
+        const data = await Promise.all(promises)
 
-        formatData.nation = datas[0]
-        formatData.data.prominentGenre = datas[1]
-        formatData.data.hotSongs = datas[2]
-        formatData.data.singer = datas[3]
+        formatData.nation = data[0]
+        formatData.data.prominentGenre = data[1]
+        formatData.data.hotSongs = data[2]
+        formatData.data.singer = data[3]
 
         return res.json(formatData)
     }catch(err){

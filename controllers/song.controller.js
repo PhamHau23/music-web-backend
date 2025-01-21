@@ -56,7 +56,6 @@ export const getSongById = async(req, res) => {
 export const getSongBySingerId = async(req, res) => {
     try{
         const singerId = req.params.id
-        console.log(singerId)
         const songs = await Song.find({singerId: {$in: singerId}})
             .select('-url -singer -singerName')
             .populate([
@@ -70,6 +69,7 @@ export const getSongBySingerId = async(req, res) => {
                 songs
             }
         ]
+        console.log(singerId)
         return res.json(newData)
     }catch(err){
         console.log('Error:', err)
@@ -98,7 +98,7 @@ export const getAllSongByGenreId = async(req, res) => {
 
 export const getSongSearch = async(req, res) => {
     try{
-        const songs = await Song.find().select('name img singerName')
+        const songs = await Song.find().select('name img singerName duration')
         return res.json(songs)
     }catch(err) {
         console.log('Error:', err)

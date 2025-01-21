@@ -2,7 +2,7 @@ import Nation from '../models/nation.model.js'
 
 export const getAllNations = async (req, res) => {
     try{
-        const nations = await Nation.find(); // Dùng model Nation để truy vấn tất cả dữ liệu
+        const nations = await Nation.find()
         return res.json(nations)
     }catch (err) {
         console.log('Error:', err)

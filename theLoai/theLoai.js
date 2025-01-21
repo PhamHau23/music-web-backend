@@ -1,4 +1,3 @@
-import {connectDB} from '../configs/mongoDb.js'
 import Genres from '../models/genres.model.js'
 import Nation from '../models/nation.model.js'
 
@@ -7,7 +6,6 @@ const data = [
 ]
 
 const addData = async () => {
-    await connectDB()
     for(const item of data){
         const nation = await Nation.findOne({name: item.nation})
         
