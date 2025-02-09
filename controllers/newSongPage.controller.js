@@ -10,7 +10,7 @@ export const newSongPage = async (req, res) => {
                     .limit(100)
                     .select('_id name singerName img duration genre singerId')
                     .populate([
-                        {path: 'genre', select: '__id name id'},
+                        {path: 'genre', select: '_id name id'},
                         {path: 'singerId', select: 'slug name -_id'}
                     ])
 

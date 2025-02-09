@@ -3,7 +3,9 @@ import Singer from "../models/singer.model.js"
 
 export const getAllSingers = async(req, res) => {
     try{
-        const singer = await Singer.find();
+        const nation = req.query.nation
+        const nation1 = await Nation.findOne(nation && {id: nation})
+        const singer = await Singer.find(nation1 && {nation: nation1.name});
         return res.json(singer)
     }catch(err){
         console.log('Error:', err)

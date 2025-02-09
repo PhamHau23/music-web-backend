@@ -13,7 +13,8 @@ const singerPageFormatData = {
 const getNewSong = (id) => {
     const song = Song.findOne({singerId: {$in: id}})
     .sort({createdAt: -1})
-    .select('name singerName img duration view releaseDate')
+    .populate({path: "singerId", select: "name slug"})
+    .select('name singerId img duration view releaseDate')
 
     return song
 }
@@ -28,25 +29,17 @@ const getHotSong = (id) => {
     return song
 }
 
-const getData = (id) => {
-    const song = Song.aggregate([
-        {$group: {
-            singerId: {$in: id},
-            newSong: { $limit: 1, $sort: {createdAt: -1}},
-            hotSong: { $limit: 6, $sort: {view: -1}}
-        }}
-    ])
-
-    return song
-}
-
 const singerData = async (slug) => {
-    const singer = await Singer.findOne({slug: slug}).select('name slug img')
+    const singer = await Singer.findOne({slug: slug})
+                        .select('name slug img')
+                        .findOneAndUpdate(
+                            {slug},
+                            {$inc: {view: 1}}
+                        )
 
     const promises = [
         getNewSong(singer._id),
         getHotSong(singer._id),
-        //getData(singer._id)
     ]
 
     const data = await Promise.all(promises)
@@ -55,7 +48,6 @@ const singerData = async (slug) => {
         singerPageFormatData.singerInfo = singer,
         singerPageFormatData.newSong = data[0],
         singerPageFormatData.hotSong = data[1],
-        //singerPageFormatData.test = data[2]
     ])
 
     return singerPageFormatData

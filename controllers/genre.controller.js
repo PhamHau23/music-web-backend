@@ -3,7 +3,7 @@ import Genres from "../models/genres.model.js";
 
 export const getAllGenres = async(req, res) => {
     try{
-        const genres = await Genres.find()
+        const genres = await Genres.find().select('name img nation numbVisited id')
         return res.json(genres)
     }catch(error){
         console.log('Error:', err)
@@ -11,13 +11,13 @@ export const getAllGenres = async(req, res) => {
     }
 }
 
-export const getGenresByNationId = async(req, res) => {
-    try{
-        const nationId = req.params.id
-        const genres = await Genres.find({nation: nationId})
-        return res.json(genres)
+export const getAllIdGenres = async(req, res) => {
+    try {
+        const nationId = req.query.id
+        const genres =  await Genres.find({nation: nationId}).select('id _id')
+        return res.json(genres)   
     }catch(error){
-        console.log('Error:', err)
+        console.log('Error:', error)
         return res.status(500).json({ message: 'Không lấy được dữ liệu' })
     }
 }

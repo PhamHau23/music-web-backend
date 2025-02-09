@@ -8,6 +8,8 @@ import {route as genrePageRoute} from "./genrePage.routes.js"
 import {route as songsPageRoute} from "./songsPage.routes.js"
 import {route as newSongPageRoute} from "./newSongPage.routes.js"
 import {route as singerPageRoute} from "./singerPage.routes.js"
+import {route as userRoute} from "./user.routes.js"
+import {route as adminRoute} from "./admin.routes.js"
 const router = Router()
 
 router.use('/nation',nationRoute)
@@ -19,5 +21,7 @@ router.use('/genrepage', genrePageRoute)
 router.use('/songpage', songsPageRoute)
 router.use('/newsongpage', newSongPageRoute)
 router.use('/singerpage', singerPageRoute)
+router.use('/user', userRoute)
+router.use('/admin', adminRoute)
 
 export default router
