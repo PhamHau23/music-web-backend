@@ -42,9 +42,6 @@ export const getSongById = async(req, res) => {
             img: songs.img,
             url: songs.url,
             duration: songs.duration
-            // releaseDate: moment(songs.releaseDate).format('DD-MM-YYYY'),
-            // createdAt: moment(songs.createdAt).tz('Asia/Ho_Chi_Minh').format('DD-MM-YYYY HH:mm:ss'),
-            // updatedAt: moment(songs.updatedAt).tz('Asia/Ho_Chi_Minh').format('DD-MM-YYYY HH:mm:ss')
         }
         return res.json(formatData)
     }catch(err){
@@ -63,13 +60,14 @@ export const getSongBySingerId = async(req, res) => {
                 {path: 'genre', select: 'id name -_id'}
             ])
         const singer = await Singer.findById(singerId)
+        
         const newData = [
             {
                 singerName: singer.name,
                 songs
             }
         ]
-        console.log(singerId)
+
         return res.json(newData)
     }catch(err){
         console.log('Error:', err)

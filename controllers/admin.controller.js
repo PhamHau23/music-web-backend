@@ -2,7 +2,6 @@ import Genres from "../models/genres.model.js"
 import Nation from "../models/nation.model.js"
 import Song from "../models/song.model.js"
 import Singer from "../models/singer.model.js"
-import { uploadImg } from "../middleware/uploadImg.js"
 import slugify from "slugify"
 
 const nation = async() => {

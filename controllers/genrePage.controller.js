@@ -55,10 +55,12 @@ export const genrePage = async (req, res) => {
 
         const data = await Promise.all(promises)
 
-        formatData.nation = data[0]
-        formatData.data.prominentGenre = data[1]
-        formatData.data.hotSongs = data[2]
-        formatData.data.singer = data[3]
+        await Promise.all([
+            formatData.nation = data[0],
+            formatData.data.prominentGenre = data[1],
+            formatData.data.hotSongs = data[2],
+            formatData.data.singer = data[3]
+        ])
 
         return res.json(formatData)
     }catch(err){

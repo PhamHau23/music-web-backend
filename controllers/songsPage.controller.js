@@ -37,9 +37,11 @@ export const songsPage = async(req, res) => {
 
         const data = await Promise.all(promises)
 
-        formatData.genre = data[0]
-        formatData.songsList = data[1]
-        formatData.hotSingerName = data[2]
+        await Promise.all([
+            formatData.genre = data[0],
+            formatData.songsList = data[1],
+            formatData.hotSingerName = data[2]
+        ])
 
         return res.json(formatData)
         

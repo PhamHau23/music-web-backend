@@ -77,11 +77,13 @@ export const getDataHomePage = async (req, res) => {
 
         const results = await Promise.all(promises);
 
-        fomatData.allNewSongs = results[0]
-        fomatData.vnNewSongs = results[1]
-        fomatData.notVnNewSongs = results[2]
-        fomatData.rankAllSong = results[3]
-        fomatData.featuredGenre = results[4]
+        await Promise.all([
+            fomatData.allNewSongs = results[0],
+            fomatData.vnNewSongs = results[1],
+            fomatData.notVnNewSongs = results[2],
+            fomatData.rankAllSong = results[3],
+            fomatData.featuredGenre = results[4]
+        ])
 
 
         return res.json(fomatData);

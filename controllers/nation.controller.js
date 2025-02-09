@@ -24,15 +24,3 @@ export const getNationById = async (req, res) => {
         return res.status(500).json({ message: 'Không lấy được dữ liệu' })
     }
 }
-
-export const deleteNationById = async (req, res) => {
-
-}
-
-export const postNation = async (req, res) => {
-
-}
-
-export const putNationById = async (req, res) => {
-
-} 
