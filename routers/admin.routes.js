@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { deleteGenre, deleteSinger, deleteSong, getAdminGenres, getAdminSongs, getAdminUploadSongPage, patchSong, postGenre, postSinger, postSong } from "../controllers/admin.controller.js";
+import { deleteGenre, deleteSinger, deleteSong, getAdminGenres, getAdminSongs, getAdminUploadSongPage, postGenre, postSinger, postSong } from "../controllers/admin.controller.js";
 import { upload, uploadImg } from "../middleware/uploadImg.js";
 import { uploadFields, uploadSong } from "../middleware/uploadSong.js";
 
@@ -14,4 +14,3 @@ route.delete('/deletesinger/:id', deleteSinger)
 route.post('/post/singer', upload.single('img'), uploadImg('casi'), postSinger)
 route.post('/post/genre', upload.single('img'), uploadImg('theloai'), postGenre)
 route.post('/post/song', uploadFields, uploadSong, postSong)
-route.put('/put/song/:id', upload.single('img'), uploadImg('baihat'), patchSong)
