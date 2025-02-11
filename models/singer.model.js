@@ -6,6 +6,7 @@ const singerSchema = new mongoose.Schema({
     nation: {type: String, ref: "Nation", required: true},
     address: {type: String},
     img: {type: String, required: true},
+    imgPublicId: {type: String},
     birthDate: {type: Date},
     albums: [{type: mongoose.Schema.Types.ObjectId, ref: "Album"}],
     view: {type: Number, default: 0}

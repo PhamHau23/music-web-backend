@@ -6,6 +6,7 @@ const genresSchema = new mongoose.Schema({
     img: {type: String, required: true},
     nation: {type: String, ref: "Nation", required: true},
     nationId: {type: mongoose.Schema.Types.ObjectId, ref: "Nation", required: true},
+    imgPublicId: {type: String},
     numbVisited: {type: Number, required: true, default: 0}
 },{ timestamps: true })
 

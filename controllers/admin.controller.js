@@ -3,6 +3,7 @@ import Nation from "../models/nation.model.js"
 import Song from "../models/song.model.js"
 import Singer from "../models/singer.model.js"
 import slugify from "slugify"
+import { v2 as cloudinary } from "cloudinary"
 
 const nation = async() => {
     const nations = await Nation.find().select('name img id')
@@ -115,6 +116,12 @@ export const getAdminUploadSongPage = async(req, res) => {
 export const deleteSong = async(req, res) => {
     try {
         const id = await req.params.id
+        const song = await Song.findById(id)
+        
+        if(song.imgPublicId){
+            await cloudinary.uploader.destroy(song.imgPublicId)
+        }
+
         await Song.deleteOne({_id: id})
         return res.status(200).json({message: `đã xóa thành công bài hát`})
     } catch (error) {
@@ -127,6 +134,12 @@ export const deleteSong = async(req, res) => {
 export const deleteGenre = async(req, res) => {
     try {
         const id = await req.params.id
+        const genre = await Genres.findById(id)
+
+        if(genre.imgPublicId){
+            await cloudinary.uploader.destroy(genre.imgPublicId)
+        }
+
         await Genres.deleteOne({_id: id})
         return res.status(200).json({message: `đã xóa thành công thể loại`})
     } catch (error) {
@@ -139,6 +152,12 @@ export const deleteGenre = async(req, res) => {
 export const deleteSinger = async(req, res) => {
     try {
         const id = await req.params.id
+        const singer = await Singer.findById(id)
+
+        if(singer.imgPublicId){
+            await cloudinary.uploader.destroy(singer.imgPublicId)
+        }
+
         await Singer.deleteOne({_id: id})
         return res.status(200).json({message: `đã xóa thành công ca si`})
     } catch (error) {
@@ -166,6 +185,7 @@ export const postSinger = async(req, res) => {
             nation: _nation.name,
             address: address,
             img: img.cloudinaryUrl,
+            imgPublicId: img.publicId,
             birthDate: date
         })
 
@@ -192,7 +212,8 @@ export const postGenre = async(req, res) => {
             name: name,
             nation: nation,
             nationId: nationId._id,
-            img: img.cloudinaryUrl
+            img: img.cloudinaryUrl,
+            imgPublicId: img.publicId
         })
 
         newGenre.save()
@@ -256,38 +277,38 @@ export const postSong = async(req, res) => {
 }
 
 //sửa song
-export const patchSong =  async(req, res) => {
-    try {
-        const songId = await req.params.id
-        const updateData = await req.body
-        const img = await req.file
-        const nationId = await Nation.findOne({id: updateData.nation})
-        const genreId = await Genres.findOne({id: updateData.genres})
-        const song = await Song.findOne({_id: songId})
+// export const patchSong =  async(req, res) => {
+//     try {
+//         const songId = await req.params.id
+//         const updateData = await req.body
+//         const img = await req.file
+//         const nationId = await Nation.findOne({id: updateData.nation})
+//         const genreId = await Genres.findOne({id: updateData.genres})
+//         const song = await Song.findOne({_id: songId})
 
-        console.log(img.originalname !== song.img)
+//         console.log(img.originalname !== song.img)
 
-        await Promise.all([
-            updateData.nation = nationId._id,
-            updateData.genres = genreId._id
-        ])
+//         await Promise.all([
+//             updateData.nation = nationId._id,
+//             updateData.genres = genreId._id
+//         ])
     
-        const updatedSong = await Song.findByIdAndUpdate(
-          songId,
-          {$set: {
-            updateData,
-            img: img.cloudinaryUrl
-          }},
-          { new: true, runValidators: true }
-        )
+//         const updatedSong = await Song.findByIdAndUpdate(
+//           songId,
+//           {$set: {
+//             updateData,
+//             img: img.cloudinaryUrl
+//           }},
+//           { new: true, runValidators: true }
+//         )
     
-        if (!updatedSong) {
-          return res.status(404).json({ error: 'Không tìm thấy bài hát.' })
-        }
+//         if (!updatedSong) {
+//           return res.status(404).json({ error: 'Không tìm thấy bài hát.' })
+//         }
     
-        return res.status(200).json({ message: 'Cập nhật thành công', data: updatedSong })
-    }catch(error){
-        console.error(error)
-        return res.status(500).json({ error: 'Lỗi máy chủ. Vui lòng thử lại sau.' })
-    }
-}
+//         return res.status(200).json({ message: 'Cập nhật thành công', data: updatedSong })
+//     }catch(error){
+//         console.error(error)
+//         return res.status(500).json({ error: 'Lỗi máy chủ. Vui lòng thử lại sau.' })
+//     }
+// }
