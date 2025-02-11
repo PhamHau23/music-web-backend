@@ -115,11 +115,15 @@ export const getAdminUploadSongPage = async(req, res) => {
 // api delete bai hat
 export const deleteSong = async(req, res) => {
     try {
-        const id = await req.params.id
+        const id = req.params.id
         const song = await Song.findById(id)
         
         if(song.imgPublicId){
             await cloudinary.uploader.destroy(song.imgPublicId)
+        }
+
+        if(song.mp3PublicId){
+            await cloudinary.uploader.destroy(song.mp3PublicId, { resource_type: "video" })
         }
 
         await Song.deleteOne({_id: id})
