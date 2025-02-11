@@ -64,6 +64,7 @@ const uploadSong = async (req, res, next) => {
                 if (error) return reject(error);
                 file.cloudinaryUrl = result.secure_url
                 file.publicId = result.public_id
+                file.duration = result.duration
                 resolve(result);
               }
             )

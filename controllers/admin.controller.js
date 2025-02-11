@@ -243,7 +243,8 @@ export const postSong = async(req, res) => {
             url: mp3.cloudinaryUrl,
             mp3PublicId: mp3.publicId,
             singerName: singerNameArr,
-            singerId: singerIdArr
+            singerId: singerIdArr,
+            duration: mp3.duration
         })
 
         newSong.save()
