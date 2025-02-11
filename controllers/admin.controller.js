@@ -212,6 +212,18 @@ export const postSong = async(req, res) => {
         const mp3 = await req.files.mp3[0]
         const nationId = await Nation.findOne({id: nation})
         const genreId = await Genres.findOne({id: genre})
+        const singerIdArr = []
+        const singerNameArr = await JSON.parse(singer)
+        
+        for(const singerName of singerNameArr){
+            const slug = slugify(singerName, {lower: true})
+            const _singer = await Singer.find({slug: slug})
+            if(_singer){
+                singerIdArr.push(_singer._id)
+            }else{
+                break
+            }
+        }
 
         if (!img || !img.cloudinaryUrl) {
             return res.status(400).json({ message: 'Không có file được upload lên Cloudinary' });
@@ -221,13 +233,15 @@ export const postSong = async(req, res) => {
             return res.status(400).json({ message: 'Không có file được upload lên Cloudinary' });
         }
 
+
         const newSong = new Song({
             name: name,
             nation: nationId._id,
             genre: genreId._id,
             img: img.cloudinaryUrl,
             url: mp3.cloudinaryUrl,
-            singerName: JSON.parse(singer)
+            singerName: singerNameArr,
+            singerId: singerIdArr
         })
 
         newSong.save()
