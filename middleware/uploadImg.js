@@ -28,14 +28,14 @@ const uploadImg = (folder) => {
                         return res.status(500).json({ message: 'Upload thất bại', error });
                     }
     
-                    req.file.cloudinaryUrl = result.secure_url; // Gán URL cho req.file
+                    req.file.cloudinaryUrl = result.secure_url
+                    req.file.publicId = result.public_id
                     next();
                 }
             );
     
             stream.end(req.file.buffer); // Đọc buffer và upload
         } catch (error) {
-            console.log('bat dau luu 3')     
             console.error('Lỗi xử lý file:', error);
             return res.status(500).json({ message: 'Lỗi xử lý file', error });
         }

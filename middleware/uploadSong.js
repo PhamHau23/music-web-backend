@@ -40,14 +40,15 @@ const uploadSong = async (req, res, next) => {
               (error, result) => {
                 if (error) return reject(error);
                 // Gán URL nhận được từ Cloudinary vào đối tượng file
-                file.cloudinaryUrl = result.secure_url;
+                file.cloudinaryUrl = result.secure_url
+                file.publicId = result.public_id
                 resolve(result);
               }
-            );
+            )
             streamifier.createReadStream(file.buffer).pipe(stream);
-          });
+          })
           uploadPromises.push(promise);
-        });
+        })
       }
   
       // Xử lý file mp3 (từ trường 'mp3')
@@ -57,28 +58,27 @@ const uploadSong = async (req, res, next) => {
             const stream = cloudinary.uploader.upload_stream(
               {
                 folder: 'webMusic/mp3',     // Folder chứa file mp3
-                resource_type: 'video'         // Với mp3, Cloudinary thường dùng resource_type 'video'
+                resource_type: 'video'        
               },
               (error, result) => {
                 if (error) return reject(error);
-                file.cloudinaryUrl = result.secure_url;
+                file.cloudinaryUrl = result.secure_url
+                file.publicId = result.public_id
                 resolve(result);
               }
-            );
-            streamifier.createReadStream(file.buffer).pipe(stream);
-          });
-          uploadPromises.push(promise);
-        });
+            )
+            streamifier.createReadStream(file.buffer).pipe(stream)
+          })
+          uploadPromises.push(promise)
+        })
       }
   
-      // Đợi tất cả các upload hoàn thành
-      await Promise.all(uploadPromises);
+      await Promise.all(uploadPromises)
   
-      // Sau khi upload xong, req.files sẽ chứa các file đã có thêm thuộc tính cloudinaryUrl
-      next();
+      next()
     } catch (error) {
-      console.error("Lỗi khi upload file lên Cloudinary:", error);
-      return res.status(500).json({ message: "Lỗi khi upload file", error });
+      console.error("Lỗi khi upload file lên Cloudinary:", error)
+      return res.status(500).json({ message: "Lỗi khi upload file", error })
     }
   };
   

@@ -190,8 +190,8 @@ export const postGenre = async(req, res) => {
         const newGenre = new Genres({
             id: id,
             name: name,
-            nation: nationId.name,
-            nationId: nationId,
+            nation: nation,
+            nationId: nationId._id,
             img: img.cloudinaryUrl
         })
 
@@ -217,7 +217,7 @@ export const postSong = async(req, res) => {
         
         for(const singerName of singerNameArr){
             const slug = slugify(singerName, {lower: true})
-            const _singer = await Singer.find({slug: slug})
+            const _singer = await Singer.findOne({slug: slug})
             if(_singer){
                 singerIdArr.push(_singer._id)
             }else{
@@ -239,7 +239,9 @@ export const postSong = async(req, res) => {
             nation: nationId._id,
             genre: genreId._id,
             img: img.cloudinaryUrl,
+            imgPublicId: img.publicId,
             url: mp3.cloudinaryUrl,
+            mp3PublicId: mp3.publicId,
             singerName: singerNameArr,
             singerId: singerIdArr
         })
