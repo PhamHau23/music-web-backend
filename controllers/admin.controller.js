@@ -2,6 +2,7 @@ import Genres from "../models/genres.model.js"
 import Nation from "../models/nation.model.js"
 import Song from "../models/song.model.js"
 import Singer from "../models/singer.model.js"
+import User from "../models/user.model.js"
 import slugify from "slugify"
 import { v2 as cloudinary } from "cloudinary"
 
@@ -30,25 +31,14 @@ const song = async() => {
 //api page quan ly the loai
 export const getAdminGenres = async(req, res) => {
     try {
-        const formatData = {
-            nation: [],
-            genres: []
-        }
-
-        const data = await Promise.all([
-            nation(),
-            genres()
-        ])
-
-        await Promise.all([
-            formatData.nation = data[0],
-            formatData.genres = data[1]
-        ])
+        const genres = await Genres.find()
+                        .select('id name img nation')
+                        .populate({path: 'nationId', select: 'name'})
         
-        return res.json(formatData)
+        return res.json(genres)
 
     } catch (error) {
-        console.log('Error:', err)
+        console.log('Error:', error)
         return res.status(500).json({ message: 'Không lấy được dữ liệu' })
     }
 }
@@ -77,7 +67,7 @@ export const getAdminSongs = async(req, res) => {
         return res.json(formatData)
 
     } catch (error) {
-        console.log('Error:', err)
+        console.log('Error:', error)
         return res.status(500).json({ message: 'Không lấy được dữ liệu' })
     }
 }
@@ -107,7 +97,7 @@ export const getAdminUploadSongPage = async(req, res) => {
         return res.json(formatData)
 
     } catch (error) {
-        console.log('Error:', err)
+        console.log('Error:', error)
         return res.status(500).json({ message: 'Không lấy được dữ liệu' })
     }
 }
@@ -129,7 +119,7 @@ export const deleteSong = async(req, res) => {
         await Song.deleteOne({_id: id})
         return res.status(200).json({message: `đã xóa thành công bài hát`})
     } catch (error) {
-        console.log('Error:', err)
+        console.log('Error:', error)
         return res.status(500).json({ message: 'Không xóa được bài hát' })
     }
 } 
@@ -147,7 +137,7 @@ export const deleteGenre = async(req, res) => {
         await Genres.deleteOne({_id: id})
         return res.status(200).json({message: `đã xóa thành công thể loại`})
     } catch (error) {
-        console.log('Error:', err)
+        console.log('Error:', error)
         return res.status(500).json({ message: 'Không xóa được thể loại' })
     }
 }
@@ -165,7 +155,7 @@ export const deleteSinger = async(req, res) => {
         await Singer.deleteOne({_id: id})
         return res.status(200).json({message: `đã xóa thành công ca si`})
     } catch (error) {
-        console.log('Error:', err)
+        console.log('Error:', error)
         return res.status(500).json({ message: 'Không xóa được thể loại' })
     }
 }
@@ -316,3 +306,29 @@ export const postSong = async(req, res) => {
 //         return res.status(500).json({ error: 'Lỗi máy chủ. Vui lòng thử lại sau.' })
 //     }
 // }
+
+//api doi role user
+export const putRole = async(req, res) => {
+    try {
+        const id = req.params.id
+        const {role} = req.body
+
+        const updateRole = await User.findByIdAndUpdate(
+            id,
+            {$set: {
+                role: role
+            }},
+            { new: true, runValidators: true }
+        )
+
+        if(!updateRole){
+            return res.status(404).json({message: 'thay đổi role không thành công'})
+        }
+
+        return res.status(200).json({message: 'thay đổi role thành công!'})
+        
+    } catch (error) {
+        console.log('Error:', error)
+        return res.status(500).json({ message: 'Lỗi máy chủ. Vui lòng thử lại sau' })
+    }
+}

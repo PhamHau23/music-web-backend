@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import 'dotenv/config'
 import User from "../models/user.model.js"
-
+import {v2 as cloudinary} from "cloudinary"
 export const register = async(req, res) => {
     try{
         const {username, password} = req.body
@@ -22,21 +22,19 @@ export const register = async(req, res) => {
 export const login = async(req, res) => {
     try{
         const {username, password} = req.body
-        let user, _password
         
-        await Promise.all(
-            [
-                user = await User.findOne({username}),
-                _password = await bcrypt.compare(password, user.password)
-            ]
-        )
+        const user = await User.findOne({username})
+        if(!user) return res.status(404).json({ message: "Tài khoản không chính xác" })
+            
+            
+        const _password = await bcrypt.compare(password, user.password)
+        if (!_password) return res.status(404).json({ message: "Mật khấu không chính xác" })
 
-        if (!user || !_password) return res.status(404).json({ error: "Tài khoản hoặc mật khấu không chính các" })
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
-        res.json({ token });
+        res.json({ token })
     }catch(error){
-        return res.status(500).json({ err: `${error.message}` })
+        return res.status(500).json({ message: `${error.message}` })
     }
 }
 
@@ -84,5 +82,35 @@ export const deleteUser = async(req, res) => {
     } catch (error) {
         console.error(error);
         res.status(401).json({ message: "lỗi api" });
+    }
+}
+
+export const putAvatar = async(req, res) => {
+    try {
+        const id = req.params.id
+        const img = await req.file
+        const user = await User.findById(id)
+
+        if(user.imgPublicId){
+            await cloudinary.uploader.destroy(user.imgPublicId)
+        }
+
+        const updateAvatar = await User.findByIdAndUpdate(
+            id,
+            {$set: {
+                img: img.cloudinaryUrl,
+                imgPublicId: img.publicId
+            }},
+            { new: true, runValidators: true }
+        )
+
+        if(!updateAvatar){
+            return res.status(404).json({message: 'không tìm thấy user'})
+        }
+
+        return res.status(200).json({message: 'thay đổi avatar thành công'})
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: 'Lỗi máy chủ. Vui lòng thử lại sau.' })
     }
 }
