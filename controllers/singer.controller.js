@@ -3,11 +3,9 @@ import Singer from "../models/singer.model.js"
 
 export const getAllSingers = async(req, res) => {
     try{
-        const nation = req.query.nation
-        const nation1 = await Nation.findOne(nation && {id: nation})
-        const singer = await Singer.find(nation1 && {nation: nation1.name})
+        const singer = await Singer.find()
                     .select('img name view nation')
-                    .populate({path: 'nation', select: 'id'})
+                    .populate([{path: 'nation', select: 'id'}])
         return res.json(singer)
     }catch(err){
         console.log('Error:', err)
