@@ -5,7 +5,6 @@ export const getAllSingers = async(req, res) => {
     try{
         const singer = await Singer.find()
                     .select('img name view nation')
-                    .populate([{path: 'nation', select: 'id'}])
         return res.json(singer)
     }catch(err){
         console.log('Error:', err)
