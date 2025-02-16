@@ -96,7 +96,13 @@ export const getAllSongByGenreId = async(req, res) => {
 
 export const getSongSearch = async(req, res) => {
     try{
-        const songs = await Song.find().select('name img singerName duration')
+        const {query} = req.query
+        if(!query) return res.jon([])
+
+        const songs = await Song.find({$or: [
+            {name: new RegExp(query, "i")},
+            {singerName: new RegExp(query, "i")}
+        ]}).limit(5)
         return res.json(songs)
     }catch(err) {
         console.log('Error:', err)

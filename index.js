@@ -8,7 +8,7 @@ connectDB()
 
 app.use(express.json())
 app.use(cors())
-app.use('/api', router)
+app.use('/phamhau/api', router)
 
 
 app.listen(3000, () => {
