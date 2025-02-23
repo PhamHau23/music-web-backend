@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {route as nationRoute, route} from "./nation.routes.js"
+import {route as nationRoute} from "./nation.routes.js"
 import {route as genreRoute} from "./genre.routes.js"
 import {route as singerRoute} from "./singer.routes.js"
 import {route as songRoute} from "./song.routes.js"
@@ -12,6 +12,7 @@ import {route as userRoute} from "./user.routes.js"
 import {route as adminRoute} from "./admin.routes.js"
 const router = Router()
 
+router.use('/', (req, res) => { return res.json('api của hậu')})
 router.use('/nation',nationRoute)
 router.use('/genre', genreRoute)
 router.use('/singer', singerRoute)
